@@ -1,30 +1,26 @@
-const express = require("express")
+const express = require('express')
 const app = express()
-const bodyparser = require("body-parser")
-const post = require("./routes/post")
-const views = require("./routes/views")
-const userRoute = require("./routes/users")
-const imageroute = require("./routes/image")
-const {sequelize} = require("sequelize")
+const ejs = require('ejs')
+const views = require('./router/views')
+const api  = require('./router/api')
 
-app.use(bodyparser.json())
-app.use(bodyparser.urlencoded({extended: true}))
+app.set('view engine','ejs')
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
-app.use('/upload', express.static('upload'))
-// app.use(cors())
+// const bodyParser = require('body-parser');
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded(
+//     {
+//         extended:true
+//     }
+// ));
+app.use('/views',views)
+app.use('/api', api) 
 
-app.use('/apis', post)
-app.use('/views', views)
-app.use('/user', userRoute)
-app.use('/image', imageroute)
-app.use('/post', post)
 
-app.use('/test', async (req, res) => {
-    let roleCheck = await sequelize.query(
-        'SELECT * FROM users where name = \'Danish\' ', {
-          type:sequelize.QueryTypes.SELECT
-      });
-      console.log(roleCheck)
+app.listen(3400, async () =>{
+    // await sequelize.sync()
+    console.log("DataBase sync")
 })
 
-module.exports = app
